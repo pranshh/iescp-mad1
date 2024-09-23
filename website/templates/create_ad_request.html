@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Create Ad Request for {{ campaign.title }}</h1>
+<h2>Campaign Goals: {{ campaign.goals }}</h2>
+<form method="POST">
+    <div class="mb-3">
+        <label for="influencer_id" class="form-label">Select Influencer:</label>
+        <select class="form-select" id="influencer_id" name="influencer_id" required>
+            {% for influencer in influencers %}
+            <option value="{{ influencer.id }}">{{ influencer.user.name }} ({{ influencer.category }} - {{ influencer.niche }})</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="message" class="form-label">Message to Influencer:</label>
+        <textarea class="form-control" id="message" name="message" required></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="requirements" class="form-label">Requirements:</label>
+        <textarea class="form-control" id="requirements" name="requirements" required></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="payment_amount" class="form-label">Payment Amount:</label>
+        <input type="number" class="form-control" id="payment_amount" name="payment_amount" step="0.01" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Ad Request</button>
+</form>
+{% endblock %}

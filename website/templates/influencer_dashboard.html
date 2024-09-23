@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Influencer Dashboard</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Profile</h5>
+                    <p class="card-text">Name: {{ current_user.name }}</p>
+                    <p class="card-text">Email: {{ current_user.email }}</p>
+                    <p class="card-text">Category: {{ influencer.category }}</p>
+                    <p class="card-text">Niche: {{ influencer.niche }}</p>
+                    <p class="card-text">Reach: {{ influencer.reach }}</p>
+                    <a href="{{ url_for('main.edit_profile') }}" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <h2 class="mb-3">Pending Ad Requests</h2>
+            {% if pending_requests %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Sponsor</th>
+                            <th>Message</th>
+                            <th>Payment</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in pending_requests %}
+                        <tr>
+                            <td>{{ request.campaign.title }}</td>
+                            <td>{{ request.campaign.sponsor.user.name }}</td>
+                            <td>{{ request.message }}</td>
+                            <td>${{ request.payment_amount }}</td>                
+                            <td>
+                                {% if request.status == 'pending' %}
+                                    <a href="{{ url_for('main.sponsor_approve_request', request_id=request.id) }}" class="btn btn-sm btn-success">Approve</a>
+                                    <a href="{{ url_for('main.sponsor_reject_request', request_id=request.id) }}" class="btn btn-sm btn-danger">Reject</a>                                    
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No pending ad requests.</p>
+            {% endif %}
+
+            <h2 class="mb-3 mt-4">Active Campaigns</h2>
+            {% if active_campaigns %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Sponsor</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in active_campaigns %}
+                        <tr>
+                            <td>{{ request.campaign.title }}</td>
+                            <td>{{ request.campaign.sponsor.user.name }}</td>
+                            <td>{{ request.campaign.start_date }}</td>
+                            <td>{{ request.campaign.end_date }}</td>
+                            <td>${{ request.payment_amount }}</td>
+                            <td>
+                                {% if request.campaign.is_flagged %}
+                                    <span class="text-danger">Flagged</span>
+                                {% else %}
+                                    <span class="text-success">Active</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No active campaigns.</p>
+            {% endif %}
+
+            <h2 class="mb-3 mt-4">Available Campaigns</h2>
+            {% if available_campaigns %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Sponsor</th>
+                            <th>Description</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Budget</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for campaign in available_campaigns %}
+                        <tr>
+                            <td>{{ campaign.title }}</td>
+                            <td>{{ campaign.sponsor.user.name }}</td>
+                            <td>{{ campaign.description }}</td>
+                            <td>{{ campaign.start_date }}</td>
+                            <td>{{ campaign.end_date }}</td>
+                            <td>${{ campaign.budget }}</td>
+                            <td>
+                                {% if campaign.is_flagged %}
+                                    <span class="text-danger">Flagged</span>
+                                {% else %}
+                                {{ campaign.status }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not campaign.is_flagged %}
+                                <a href="{{ url_for('main.apply_to_campaign', campaign_id=campaign.id) }}" class="btn btn-sm btn-primary">Apply</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No available campaigns.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

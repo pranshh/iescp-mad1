@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Sponsor Dashboard</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Profile</h5>
+                    <p class="card-text">Name: {{ current_user.name }}</p>
+                    <p class="card-text">Company: {{ sponsor.company_name }}</p>
+                    <p class="card-text">Industry: {{ sponsor.industry }}</p>
+                    <p class="card-text">Budget: ${{ sponsor.budget }}</p>
+                    <a href="{{ url_for('main.edit_profile') }}" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <h2 class="mb-3">Your Campaigns</h2>
+            {% if campaigns %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Budget</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for campaign in campaigns %}
+                        <tr>
+                            <td>{{ campaign.title }}</td>
+                            <td>{{ campaign.description }}</td>
+                            <td>{{ campaign.start_date }}</td>
+                            <td>{{ campaign.end_date }}</td>
+                            <td>${{ campaign.budget }}</td>
+                            <td>
+                                {% if campaign.is_flagged %}
+                                    <span class="text-danger">Flagged</span>
+                                {% else %}
+                                    {{ campaign.status }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not campaign.is_flagged %}
+                                    <a href="{{ url_for('main.create_ad_request', campaign_id=campaign.id) }}" class="btn btn-sm btn-primary">Create Ad Request</a>
+                                    <a href="{{ url_for('main.update_campaign', campaign_id=campaign.id) }}" class="btn btn-sm btn-secondary">Update</a>
+                                    <form action="{{ url_for('main.delete_campaign', campaign_id=campaign.id) }}" method="POST" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No campaigns available.</p>
+            {% endif %}
+            <a href="{{ url_for('main.create_campaign') }}" class="btn btn-sm btn-primary mt-3">Create New Campaign</a>
+
+            <h2 class="mb-3 mt-4">Search Influencers</h2>
+            <form action="{{ url_for('main.search_influencers') }}" method="POST">
+                <button type="submit" class="btn btn-sm btn-primary">Search</button>
+            </form>
+            {% if search_results %}
+                <table class="table table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Niche</th>
+                            <th>Reach</th>
+                            <th>Followers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for influencer in search_results %}
+                        <tr>
+                            <td>{{ influencer.name }}</td>
+                            <td>{{ influencer.niche }}</td>
+                            <td>{{ influencer.reach }}</td>
+                            <td>{{ influencer.followers }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+            <h2 class="mb-3 mt-4">Ad Requests</h2>
+            {% if pending_requests %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Influencer</th>
+                            <th>Message</th>
+                            <th>Proposed Budget</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in pending_requests %}
+                        <tr>
+                            <td>{{ request.campaign.title }}</td>
+                            <td>{{ request.influencer.user.name }}</td>
+                            <td>{{ request.message }}</td>
+                            <td>${{ request.payment_amount }}</td>
+                            <td>
+                                {% if request.status == 'pending' %}
+                                <span class="text-muted">Waiting for Influencer</span>
+                                {% elif request.status == 'approved' %}
+                                    <span class="text-success">Approved</span>
+                                {% elif request.status == 'rejected' %}
+                                    <span class="text-danger">Rejected</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No pending ad requests.</p>
+            {% endif %}
+
+            <h2 class="mb-3 mt-4">Approved Ad Requests</h2>
+            {% if approved_requests %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Influencer</th>
+                            <th>Message</th>
+                            <th>Agreed Budget</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in approved_requests %}
+                        <tr>
+                            <td>{{ request.campaign.title }}</td>
+                            <td>{{ request.influencer.user.name }}</td>
+                            <td>{{ request.message }}</td>
+                            <td>${{ request.payment_amount }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No approved ad requests.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

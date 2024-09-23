@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Admin Dashboard</h1>
+
+<section>
+    <h2>Users Overview</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Flagged</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            {% if user.role != 'admin' %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ 'Yes' if user.is_flagged else 'No' }}</td>
+                <td>
+                    <a href="{{ url_for('main.flag_item', model='user', id=user.id) }}" class="btn btn-warning">
+                        {{ 'Unflag' if user.is_flagged else 'Flag' }}
+                    </a>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <h2>Campaigns Overview</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Sponsor</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Budget</th>
+                <th>Status</th>
+                <th>Flagged</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigns %}
+            <tr>
+                <td>{{ campaign.id }}</td>
+                <td>{{ campaign.title }}</td>
+                <td>{{ campaign.sponsor.user.name }}</td>
+                <td>{{ campaign.start_date }}</td>
+                <td>{{ campaign.end_date }}</td>
+                <td>${{ campaign.budget }}</td>
+                <td>{{ campaign.status }}</td>
+                <td>{{ 'Yes' if campaign.is_flagged else 'No' }}</td>
+                <td>
+                    <a href="{{ url_for('main.flag_item', model='campaign', id=campaign.id) }}" class="btn btn-warning">
+                        {{ 'Unflag' if campaign.is_flagged else 'Flag' }}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <h2>Ad Requests Overview</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Campaign</th>
+                <th>Influencer</th>
+                <th>Payment Amount</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ad_request in ad_requests %}
+            <tr>
+                <td>{{ ad_request.id }}</td>
+                <td>{{ ad_request.campaign.title }}</td>
+                <td>{{ ad_request.influencer.user.name }}</td>
+                <td>${{ ad_request.payment_amount }}</td>
+                <td>{{ ad_request.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Register</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password1" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password1" name="password1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password2" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="password2" name="password2" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-select" id="role" name="role" required onchange="toggleRoleFields()">
+                            <option value="">Select a role</option>
+                            <option value="sponsor">Sponsor</option>
+                            <option value="influencer">Influencer</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Sponsor-specific fields -->
+                    <div id="sponsor-fields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="company_name" class="form-label">Company Name</label>
+                            <input type="text" class="form-control" id="company_name" name="company_name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="industry" class="form-label">Industry</label>
+                            <input type="text" class="form-control" id="industry" name="industry">
+                        </div>
+                        <div class="mb-3">
+                            <label for="budget" class="form-label">Budget</label>
+                            <input type="number" class="form-control" id="budget" name="budget">
+                        </div>
+                    </div>
+                    
+                    <!-- Influencer-specific fields -->
+                    <div id="influencer-fields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <input type="text" class="form-control" id="category" name="category">
+                        </div>
+                        <div class="mb-3">
+                            <label for="niche" class="form-label">Niche</label>
+                            <input type="text" class="form-control" id="niche" name="niche">
+                        </div>
+                        <div class="mb-3">
+                            <label for="reach" class="form-label">Reach (number of followers)</label>
+                            <input type="number" class="form-control" id="reach" name="reach">
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleRoleFields() {
+    var role = document.getElementById('role').value;
+    var sponsorFields = document.getElementById('sponsor-fields');
+    var influencerFields = document.getElementById('influencer-fields');
+    
+    if (role === 'sponsor') {
+        sponsorFields.style.display = 'block';
+        influencerFields.style.display = 'none';
+    } else if (role === 'influencer') {
+        sponsorFields.style.display = 'none';
+        influencerFields.style.display = 'block';
+    } else {
+        sponsorFields.style.display = 'none';
+        influencerFields.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

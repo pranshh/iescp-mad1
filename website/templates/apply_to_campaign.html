@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Apply to Campaign: {{ campaign.title }}</h1>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label for="message" class="form-label">Message to Sponsor (optional):</label>
+            <textarea id="message" name="message" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="proposed_budget" class="form-label">Proposed Fees:</label>
+            <input type="number" id="proposed_budget" name="proposed_budget" class="form-control" step="0.01" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Application</button>
+    </form>
+</div>
+{% endblock %}
